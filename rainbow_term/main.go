@@ -3,11 +3,11 @@ package main
 import (
 	t "github.com/nsf/termbox-go"
 	"os"
+	"time"
 )
 
 func main() {
-	t.SetOutputMode(t.Output256)
-	var colors = [7]int{1, 202, 11, 10, 19, 17, 18}
+	var colors = [7]t.Attribute{1, 2, 3, 4, 5, 6, 7}
 	var current_color = 0
 	go func() {
 		for {
@@ -19,15 +19,18 @@ func main() {
 		}
 	}()
 	t.Init()
+	t.SetOutputMode(t.Output256)
 	for {
-		var w, h = t.Size()
+		var h, w = t.Size()
 		for i := 0; i < h; i++ {
 			for n := 0; n < w; n++ {
-				t.SetCell(i, n, ' ', 0, colors[current_color])
+				t.SetCell(i, n, ' ', colors[current_color], colors[current_color])
 				if current_color == 6 {
 					current_color = 0
 				}
 				current_color++
+				t.Flush()
+				time.Sleep(1 * time.Millisecond)
 			}
 		}
 	}
