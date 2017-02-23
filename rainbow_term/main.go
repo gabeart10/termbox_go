@@ -23,18 +23,17 @@ func main() {
 	var set_start = 0
 	for {
 		for i := 0; i < h; i++ {
-			go func(start int, width int, height int, colors [7]t.Attribute) {
+			go func(start, width, height int, colors [7]t.Attribute) {
 				currentColor := start
 				for n := 0; n < width; n++ {
-					t.SetCell(width, height, ' ', colors[currentColor], colors[currentColor])
+					t.SetCell(n, height, ' ', colors[currentColor], colors[currentColor])
 					if currentColor == 6 {
 						currentColor = 0
 					} else {
 						currentColor++
 					}
 				}
-				t.Flush()
-			}(set_start, w, h, colors)
+			}(set_start, w, i, colors)
 			time.Sleep(10 * time.Millisecond)
 		}
 		if set_start == 6 {
@@ -42,5 +41,7 @@ func main() {
 		} else {
 			set_start++
 		}
+
+		t.Flush()
 	}
 }
