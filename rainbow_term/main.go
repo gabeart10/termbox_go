@@ -23,7 +23,7 @@ func main() {
 		var w, h = t.Size()
 		for i := 0; i < h; i++ {
 			for n := 0; n < w; n++ {
-				t.SetCell(i, n, " ", 0, colors[current_color])
+				t.SetCell(i, n, ' ', 0, colors[current_color])
 				if current_color == 6 {
 					current_color = 0
 				}
