@@ -8,7 +8,6 @@ import (
 
 func main() {
 	var colors = [7]t.Attribute{1, 2, 3, 4, 5, 6, 7}
-	var current_color = 0
 	go func() {
 		for {
 			var exitEvent = t.PollEvent()
@@ -20,18 +19,28 @@ func main() {
 	}()
 	t.Init()
 	t.SetOutputMode(t.Output256)
+	var w, h = t.Size()
+	var set_start = 0
 	for {
-		var h, w = t.Size()
 		for i := 0; i < h; i++ {
-			for n := 0; n < w; n++ {
-				t.SetCell(i, n, ' ', colors[current_color], colors[current_color])
-				if current_color == 6 {
-					current_color = 0
+			go func(start int, width int, height int, colors [7]t.Attribute) {
+				currentColor := start
+				for n := 0; n < width; n++ {
+					t.SetCell(width, height, ' ', colors[currentColor], colors[currentColor])
+					if currentColor == 6 {
+						currentColor = 0
+					} else {
+						currentColor++
+					}
 				}
-				current_color++
 				t.Flush()
-				time.Sleep(1 * time.Millisecond)
-			}
+			}(set_start, w, h, colors)
+			time.Sleep(10 * time.Millisecond)
+		}
+		if set_start == 6 {
+			set_start = 0
+		} else {
+			set_start++
 		}
 	}
 }
