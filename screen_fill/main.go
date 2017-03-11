@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func remove(array []int, item int) []int {
+func remove(array [][2]int, item [2]int) [][2]int {
 	for i := 0; i < len(array); i++ {
 		if array[i] == item {
 			return append(array[:i], array[i+1:]...)
@@ -21,12 +21,19 @@ func main() {
 	var w, h = t.Size()
 	var widthVals = make([]int, w)
 	var heightVals = make([]int, h)
+	var allCords = make([][2]int, h*w)
 	for i := 0; i < w; i++ {
 		widthVals = append(widthVals, i)
 	}
 	for i := 0; i < h; i++ {
 		heightVals = append(heightVals, i)
 	}
+	for i := 0; i < h; i++ {
+		for n := 0; n < w; n++ {
+			allCords = append(allCords, [2]int{n, i})
+		}
+	}
+
 	go func() {
 		for {
 			var event = t.PollEvent()
@@ -38,12 +45,14 @@ func main() {
 	}()
 	for i := 0; i < w*h; i++ {
 		rand.Seed(time.Now().UnixNano())
-		var currentW = widthVals[rand.Intn(len(widthVals))]
-		var currentH = heightVals[rand.Intn(len(heightVals))]
+		var currentCord = allCords[rand.Intn(len(allCords))]
 		var randColorNum = rand.Intn(265)
 		var randColor = t.Attribute(randColorNum)
-		t.SetCell(currentW, currentH, ' ', randColor, randColor)
-		widthVals = remove(widthVals, currentW)
-		heightVals = remove(heightVals, currentH)
+		t.SetCell(currentCord[0], currentCord[1], ' ', randColor, randColor)
+		allCords = remove(allCords, currentCord)
+		t.Flush()
+		time.Sleep(1 * time.Millisecond)
+	}
+	for {
 	}
 }
